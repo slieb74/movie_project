@@ -1,0 +1,14 @@
+<h1>Welcome to the information on mystery director #{{director}}!</h1>
+
+   <h3>They have directed {{movies.__len__()}} movies</h3>
+
+   <h3>This directors movies are:</h3>
+      <ol>
+        {% for movie in movies %}
+        <li>{{movie}}</li>
+        <br>
+        {% endfor %}
+      </ol>
+    <h3>Can you guess who it is?</h3>
+
+   <h3>Thank you for stopping by. Don't forget to donate</h3>

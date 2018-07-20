@@ -1,0 +1,7 @@
+<h3>The average revenue for {{timeframe}} movies is {{avg_revenue}}</h3>
+<h4>The following movies were released in {{timeframe}}:</h4>
+<ul>
+  {% for movie in movies %}
+  <li>{{movie.title}} - ${{movie.revenue}}</li>
+  {% endfor %}
+</ul>

@@ -1,8 +1,17 @@
 <ol>
+<h2>The number of movies that match your search is: {{ movies.__len__() }}</h2>
 {% for movie in movies %}
-  <li>
-      <h4>Author: {{ tweet.user }}</h4>
-      <p>Content: {{ tweet.text }}</p>
-  </li>
+    <li>
+        <h3>{{ movie.title }}</h3>
+        <ul>
+        <li><b>Director:</b> {{ movie.director }}</li>
+        <li><b>Genres:</b> {{ movie.genres }}</li>
+        <li><b>Release Date:</b> {{ movie.release_date }}</li>
+        <li><b>Budget:</b> ${{ movie.budget }}</li>
+        <li><b>Revenue:</b> ${{ movie.revenue }}</li>
+        <li><b>Runtime:</b> {{ movie.runtime }} minutes</li>
+        <li><b>IMDb Rating:</b> {{ movie.imdb_rating }}</li>
+        </ul>
+    </li>
 {% endfor %}
 </ol>

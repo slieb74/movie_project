@@ -1,0 +1,13 @@
+<h1>Welcome to the information on {{genre.title()}}!</h1>
+
+   <h3>There are {{movies.__len__()}} movies with this genre</h3>
+
+   <h3>The movies in this genre are:</h3>
+      <ol>
+        {% for movie in movies %}
+        <li>{{movie}}</li>
+        <br>
+        {% endfor %}
+      </ol>
+
+   <h3>Thank you for stopping by. Don't forget to donate</h3>
