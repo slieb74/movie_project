@@ -12,7 +12,7 @@ df = pd.DataFrame(data)
 
 mask = (df['directors'] != '\\N') & (df['runtimeMinutes'] != '\\N') & (df['genres'] != '\\N') & (df['numVotes'] > 1000)
 
-clean_df = df[mask].drop(columns='titleType')
+clean_df = df[mask]#.drop(columns='titleType')
 
 #import moviedb_table
 moviedb_table = pd.read_csv(cwd+'/sample_moviedb_df.csv', index_col=0, low_memory=False)
@@ -21,7 +21,7 @@ moviedb_table = pd.read_csv(cwd+'/sample_moviedb_df.csv', index_col=0, low_memor
 joined_table = pd.merge(clean_df,moviedb_table, on='tconst')
 
 #clean joined_table
-joined_table = joined_table.drop(columns=['runtimeMinutes', 'startYear', 'numVotes', 'movie_id'])
+joined_table = joined_table.drop(columns=['runtimeMinutes', 'titleType', 'startYear', 'numVotes', 'movie_id'])
 
 #remove all secondary directors
 def remove_extra_directors():

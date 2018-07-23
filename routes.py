@@ -134,16 +134,6 @@ def movies_by_director(director):
     movies_by_director = [movie for movie in all_movies_dict if director== movie['director']]
     return render_template('movies.html',movies=movies_by_director)
 
-# @app.server.route('/directors')
-# def directors():
-#     all_directors_dict = [director.to_dict() for director in Director.query.all()][0]
-#     return jsonify(all_directors_dict)
-#
-# @app.server.route('/genres')
-# def genres():
-#     all_genres_dict = [genre.to_dict() for genre in Genre.query.all()][0]
-#     return jsonify(all_genres_dict)
-
 @app.server.route('/genres')
 def genres():
     all_genres_dict = [gen.name for gen in Genre.query.order_by(Genre.name).all()]

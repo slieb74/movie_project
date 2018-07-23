@@ -12,4 +12,4 @@ app.server.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app.server)
 
-import routes
+import routes, dashboard
