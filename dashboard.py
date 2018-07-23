@@ -10,6 +10,7 @@ import calendar
 import plotly.graph_objs as go
 
 season_dict={'summer':['06','07','08'], 'fall':['09','10','11'], 'winter':['12','01','02'], 'spring':['03','04','05']}
+months = [1,2,3,4,5,6,7,8,9,10,11,12]
 
 ######################  MOVIES  ######################
 def movies_by_month(month):
@@ -18,7 +19,6 @@ def movies_by_month(month):
     return movies_in_month
 
 def movie_count_by_month_graph():
-    months = [1,2,3,4,5,6,7,8,9,10,11,12]
     movies_in_month = [movies_by_month(month) for month in months]
     movies = [len(movies) for movies in movies_in_month]
     return dcc.Graph(
@@ -38,7 +38,6 @@ def avg_revenue_by_month(month):
     return '${:,}'.format(avg_revenue)
 
 def avg_revenue_month_graph():
-    months = [1,2,3,4,5,6,7,8,9,10,11,12]
     avg_revenue = [avg_revenue_by_month(month) for month in months]
     return dcc.Graph(
             id='bar-graph-avg-rev-months',
@@ -58,7 +57,6 @@ def avg_revenue_by_season(season):
     return avg_revenue
 
 def avg_revenue_season_graph():
-    months = [1,2,3,4,5,6,7,8,9,10,11,12]
     seasons=['summer', 'fall', 'winter', 'spring']
     avg_revenue = [avg_revenue_by_season(season) for season in seasons]
     return dcc.Graph(
@@ -210,8 +208,6 @@ def genre_total_layout():
                  'layout' :{'title': "Total Amount made for each Genre"}
                  }
 
-        # avg_revenue = round(sum_revenue/len(movies_excl_zero_revenue))
-
 def genre_avg(genre):
     pay_movies = [movie for movie in Movie.query.filter(Movie.revenue >  0).all()]
     total = 0
@@ -222,7 +218,7 @@ def genre_avg(genre):
             amt+=1
     full_avg = round(total/amt)
     return '${:,}'.format(full_avg)
-#Genre avg made
+
 def genre_avg_layout():
     total = [genre_avg(g) for g in genre_order]
     x_values = [genre['name'] for genre in genre_order]
@@ -236,6 +232,87 @@ def genre_avg_layout():
                  }],
                  'layout' : {'title': "Average Amount Made for each Genre"}
                  }
+
+def genre_setup():
+    return [{'label': gen['name'], 'value': gen['id']} for gen in genre_order]
+
+def movie_to_month_with_genre(month, genre):
+    all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
+    movies_in_month = [movie for movie in all_movies_dict if int(movie['release_date'][5:7]) == month]
+    movies_w_genre = [gen for gen in movies_in_month if (genre[0] in gen['genres'])]
+    return movies_w_genre
+
+#how many a month
+def get_trace(genre):
+    picked_genre = [gen['name'] for gen in genre_order if gen['id'] == genre]
+    gen_and_month = [movie_to_month_with_genre(month, picked_genre) for month in months]
+    genre_month_hist = [len(x) for x in gen_and_month]
+#    pdb.set_trace()
+    return {
+         'x' : [calendar.month_name[i]for i in months],
+         'y' : genre_month_hist,
+         'name' : picked_genre[0],
+         'type' : 'line'
+         }
+def genre_months(genre):
+    traces = [get_trace(g) for g in genre]
+    # pdb.set_trace()
+    return dcc.Graph(
+            id = "Genres_per_month",
+            figure ={'data' :
+                traces,
+                 'layout' : {'title': "Movies in Genre per month"}
+                 })
+
+#how much made a month
+def month_genre_made(month, genre):
+    all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
+    movies_in_month = [movie for movie in all_movies_dict if int(movie['release_date'][5:7]) == month]
+    movies_w_genre = [gen for gen in movies_in_month if (genre[0] in gen['genres'])]
+    move_rev = [r['revenue'] for r in movies_w_genre]
+    return sum(move_rev)
+
+def get_tot_trace(genre):
+    picked_genre = [gen['name'] for gen in genre_order if gen['id'] == genre]
+    gen_and_month = [month_genre_made(month, picked_genre) for month in months]
+    return { 'x' : [calendar.month_name[i]for i in months],
+             'y' : gen_and_month,
+             'name' : picked_genre[0],
+             'type' : 'line'
+             }
+def genre_tot_months(genre):
+    traces = [get_tot_trace(g) for g in genre]
+    return dcc.Graph(
+            id = "Genres_per_month",
+            figure ={'data' :
+                traces,
+                 'layout' : {'title': "Genre Total $ made per month"}
+                 })
+
+#how much profit a month
+def month_profit_made(month, genre):
+    all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
+    movies_in_month = [movie for movie in all_movies_dict if int(movie['release_date'][5:7]) == month]
+    movies_w_genre = [gen for gen in movies_in_month if (genre[0] in gen['genres'])]
+    move_rev = [(r['revenue'] - r['budget']) for r in movies_w_genre]
+    return sum(move_rev)
+
+def get_pro_trace(genre):
+    picked_genre = [gen['name'] for gen in genre_order if gen['id'] == genre]
+    gen_and_month = [month_profit_made(month, picked_genre) for month in months]
+    return { 'x' : [calendar.month_name[i]for i in months],
+             'y' : gen_and_month,
+             'name' : picked_genre[0],
+             'type' : 'line'
+             }
+def genre_profits_months(genre):
+    traces = [get_pro_trace(g) for g in genre]
+    return dcc.Graph(
+            id = "Genres_per_month",
+            figure ={'data' :
+                traces,
+                 'layout' : {'title': "Genre Profit per month"}
+                 })
 
 ##################### DIRECTORS ##########################
 def director_count():
@@ -276,6 +353,9 @@ def director_revenue_graph():
 ##################### DASH LAYOUT ##########################
 
 app.layout = html.Div(children=[
+    html.H1('Welcome to our Movie Database.'),
+    html.H3('To fully enjoy your experience, play around with different routes to learn more about movie performance.'),
+
     dcc.Dropdown(
         id='all-dropdown',
         options=[
@@ -294,16 +374,23 @@ app.layout = html.Div(children=[
     ),
     html.Div(id='class-graphs'),
 
-    html.Label(
-        html.H4('Click on the month to see which movies were released')),
+    html.Label(),
     dcc.RadioItems(
-        id='month-radio-items',
+        id='radio-items',
         options=[],
         value=0,
         labelStyle={'display': 'inline-block'}
     ),
     html.Div(id='month-graphs'),
+    dcc.Checklist(
+        id='genre-specific',
+        options=[],
+        values = [1],
+        labelStyle={'display': 'inline-block'}
+    ),
+    html.Div(id='month_genres')
 ])
+
 
 
 @app.callback(
@@ -364,10 +451,10 @@ def update_output(value):
         return director_revenue_graph()
 
 @app.callback(
-    Output(component_id = 'month-radio-items', component_property='options'),
+    Output(component_id = 'radio-items', component_property='options'),
     [Input(component_id= 'all-dropdown', component_property='value')
     ])
-def update_checklist(value):
+def update_radio_items(value):
     if value=='M':
         return [{'label': 'January', 'value': 1},
         {'label': 'February', 'value': 2},
@@ -382,13 +469,42 @@ def update_checklist(value):
         {'label': 'November', 'value': 11},
         {'label': 'December', 'value': 12}]
     elif value=='G':
-        return [{'label': 'January', 'value': '1'}]
+        return [
+        {'label': 'How Many a month', 'value': 'MANY'},
+        {'label': 'Revenue', 'value': 'REV'},
+        {'label': 'Profit', 'value': 'PRO'}]
     elif value=='D':
         return [{'label': 'February', 'value': '2'}]
 
 @app.callback(
+    Output(component_id = 'genre-specific', component_property='options'),
+    [Input(component_id= 'all-dropdown', component_property='value')
+    ])
+def update_checklists(value):
+    if value=='M':
+        pass
+    elif value=='G':
+        return genre_setup()
+    elif value=='D':
+        pass
+
+
+@app.callback(
     Output(component_id = 'month-graphs', component_property='children'),
-    [Input(component_id = 'month-radio-items', component_property='value')]
+    [Input(component_id = 'radio-items', component_property='value')]
     )
 def update_secondary_graph(value):
     return show_movies_in_month(value)
+
+
+@app.callback(
+    Output('month_genres', 'children'),
+    [Input('genre-specific', 'values'),
+    Input ('radio-items', 'value')])
+def update_gen_months(value, radio):
+    if radio == 'MANY':
+        return genre_months(value)
+    elif radio == 'REV':
+        return genre_tot_months(value)
+    elif radio == 'PRO':
+        return genre_profits_months(value)
