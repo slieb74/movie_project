@@ -9,9 +9,9 @@ from models import Movie, Director, Genre, MovieGenre
 import calendar
 import plotly.graph_objs as go
 
-
 season_dict={'summer':['06','07','08'], 'fall':['09','10','11'], 'winter':['12','01','02'], 'spring':['03','04','05']}
 
+######################  MOVIES  ######################
 def movies_by_month(month):
     all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
     movies_in_month = [movie for movie in all_movies_dict if int(movie['release_date'][5:7]) == month]
@@ -78,22 +78,22 @@ def avg_revenue_season_graph():
     #                 title='Average Revenue by Season Released')
     #                 })
 
-def revenue_budget_by_movie():
+def movie_info_tuples():
     all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
     movies_with_budget_and_rev = [movie for movie in all_movies_dict if movie['revenue']>0 and movie['budget']>20]
-    budget_revenue_tuples = [(movie['title'], movie['budget'], movie['revenue']) for movie in movies_with_budget_and_rev]
-    return budget_revenue_tuples
+    movie_info_tuples = [(movie['title'], movie['budget'], movie['revenue'], movie['imdb_rating']) for movie in movies_with_budget_and_rev]
+    return movie_info_tuples
 
 def revenue_budget_scatter_graph():
-    budget_revenue_tuples = revenue_budget_by_movie()
+    movie_info_tuples = movie_info_tuples()
     return dcc.Graph(
         id='budget-vs-revenue',
         figure={
             'data': [
                 go.Scatter(
-                    x=[budget_revenue_tuple[1] for budget_revenue_tuple in budget_revenue_tuples],
-                    y=[budget_revenue_tuple[2] for budget_revenue_tuple in budget_revenue_tuples],
-                    text=[budget_revenue_tuple[0] for budget_revenue_tuple in budget_revenue_tuples],
+                    x=[info[1] for info in movie_info_tuples],
+                    y=[info[2] for info in movie_info_tuples],
+                    text=[info[0] for info in movie_info_tuples],
                     mode='markers',
                     opacity=0.7,
                     marker={
@@ -109,22 +109,16 @@ def revenue_budget_scatter_graph():
                 hovermode='closest'
     )})
 
-def budget_imdb_rating_by_movie():
-    all_movies_dict = [movie.to_dict() for movie in Movie.query.all()]
-    movies_with_budget_not_null = [movie for movie in all_movies_dict if movie['budget']>20]
-    budget_imdb_tuples = [(movie['title'], movie['budget'], movie['imdb_rating']) for movie in movies_with_budget_not_null]
-    return budget_imdb_tuples
-
 def budget_imdb_scatter_graph():
-    budget_imdb_tuples = budget_imdb_rating_by_movie()
+    movie_info_tuples = movie_info_tuples()
     return dcc.Graph(
         id='budget-vs-imdb_rating',
         figure={
             'data': [
                 go.Scatter(
-                    x=[budget_imdb_tuple[1] for budget_imdb_tuple in budget_imdb_tuples],
-                    y=[budget_imdb_tuple[2] for budget_imdb_tuple in budget_imdb_tuples],
-                    text=[budget_imdb_tuple[0] for budget_imdb_tuple in budget_imdb_tuples],
+                    x=[info[1] for info in movie_info_tuples],
+                    y=[info[3] for info in movie_info_tuples],
+                    text=[info[0] for info in movie_info_tuples],
                     mode='markers',
                     opacity=0.7,
                     marker={
@@ -141,16 +135,15 @@ def budget_imdb_scatter_graph():
     )})
 
 def revenue_imdb_scatter_graph():
-    budget_imdb_tuples = budget_imdb_rating_by_movie()
-    budget_revenue_tuples = revenue_budget_by_movie()
+    movie_info_tuples = movie_info_tuples()
     return dcc.Graph(
         id='revenue-vs-imdb_rating',
         figure={
             'data': [
                 go.Scatter(
-                    x=[budget_revenue_tuple[2] for budget_revenue_tuple in budget_revenue_tuples],
-                    y=[budget_imdb_tuple[2] for budget_imdb_tuple in budget_imdb_tuples],
-                    text=[budget_imdb_tuple[0] for budget_imdb_tuple in budget_imdb_tuples],
+                    x=[info[2] for info in movie_info_tuples],
+                    y=[info[3] for info in movie_info_tuples],
+                    text=[info[0] for info in movie_info_tuples],
                     mode='markers',
                     opacity=0.7,
                     marker={
@@ -166,10 +159,78 @@ def revenue_imdb_scatter_graph():
                 hovermode='closest'
     )})
 
+######################  GENRES  ######################
+
+genre_order = [gen.to_dict() for gen in Genre.query.order_by(Genre.name).all()]
+#shows a count of how many genres had movies
+def genre_count_layout():
+    genres = [gen.name for gen in Genre.query.order_by(Genre.name).all()]
+    genre_count = [Genre.query.filter(Genre.id == MovieGenre.genre_id).filter(Genre.name== type).count() for type in genres]
+    return {'data' : [{
+                 'x' : genres,
+                 'y' : genre_count,
+                 'name' : "Movie Genres",
+                 'type' : 'bar'
+                 }],
+                 'layout' : {'title': "Total Genres Released"}
+                 }
+
+def movies_to_genre(genre):
+    pay_movies = [movie for movie in Movie.query.filter(Movie.revenue >  0).all()]
+    total = 0
+    for pay in pay_movies:
+        if pay.title in genre['movies']:
+            total += pay.revenue
+    tot =round(total)
+    return '${:,}'.format(tot)
+
+#Genre total made
+def genre_total_layout():
+    total = [movies_to_genre(g) for g in genre_order]
+    x_values = [genre['name'] for genre in genre_order]
+    y_values = total
+    return  {'data' : [{
+                 'x' : x_values,
+                 'y' : y_values,
+                 'name' : "Movie Genres",
+                 'type' : 'bar',
+                 'color' : "green"
+                 }],
+                 'layout' :{'title': "Total Amount made for each Genre"}
+                 }
+
+        # avg_revenue = round(sum_revenue/len(movies_excl_zero_revenue))
+
+def genre_avg(genre):
+    pay_movies = [movie for movie in Movie.query.filter(Movie.revenue >  0).all()]
+    total = 0
+    amt = 0
+    for pay in pay_movies:
+        if pay.title in genre['movies']:
+            total += pay.revenue
+            amt+=1
+    full_avg = round(total/amt)
+    return '${:,}'.format(full_avg)
+#Genre avg made
+def genre_avg_layout():
+    total = [genre_avg(g) for g in genre_order]
+    x_values = [genre['name'] for genre in genre_order]
+    y_values = total
+    return {'data' : [{
+                 'x' : x_values,
+                 'y' : y_values,
+                 'name' : "Movie Genres",
+                 'type' : 'bar',
+                 'color' : 'red'
+                 }],
+                 'layout' : {'title': "Average Amount Made for each Genre"}
+                 }
+
+##################### DASH LAYOUT ##########################
 
 app.layout = html.Div(children=[
     dcc.Dropdown(
-        id='class-dropdown',
+        id='all-dropdown',
         options=[
             {'label': 'Movies', 'value': 'M'},
             {'label': 'Genres', 'value': 'G'},
@@ -177,29 +238,44 @@ app.layout = html.Div(children=[
         ],
         value='M'
     ),
-    html.Div(id='class-choices'),
+    html.Div(id='all-choices'),
 
     dcc.Dropdown(
-            id='movie-dropdown',
-            options=[
-                {'label': 'Count', 'value': 'CT'},
-                {'label': 'Average Revenue per Month', 'value': 'AVG-Month'},
-                {'label': 'Average Revenue per Season', 'value': 'AVG-Season'},
-                {'label': 'Budget/Revenue', 'value': 'Bud/Rev'},
-                {'label': 'Budget/IMDb Rating', 'value': 'Bud/IMDb'},
-                {'label': 'Revenue/IMDb Rating', 'value': 'Rev/IMDb'}
-            ],
-            value="CT"),
-    html.Div(id='movie-graphs')
+            id='class-dropdown',
+            options=[],
+            value='M-CT'
+    ),
+    html.Div(id='class-graphs')
 ])
 
-@app.callback(
-    Output(component_id = 'movie-graphs', component_property='children'),
-    [Input(component_id= 'movie-dropdown', component_property='value')]
-    )
 
+@app.callback(
+    Output(component_id = 'class-dropdown', component_property='options'),
+    [Input(component_id= 'all-dropdown', component_property='value')]
+    )
+def update_dropdown(value):
+    if value=='M':
+        return [{'label': 'Count', 'value': 'M-CT'},
+        {'label': 'Average Revenue per Month', 'value': 'AVG-Month'},
+        {'label': 'Average Revenue per Season', 'value': 'AVG-Season'},
+        {'label': 'Budget/Revenue', 'value': 'Bud/Rev'},
+        {'label': 'Budget/IMDb Rating', 'value': 'Bud/IMDb'},
+        {'label': 'Revenue/IMDb Rating', 'value': 'Rev/IMDb'}
+        ]
+    elif value=='G':
+        return [{'label': 'Count', 'value': 'G-CT'},
+        {'label': 'Total', 'value': 'TOT'},
+        {'label': 'Average', 'value': 'AVG'}
+        ]
+    elif value=='D':
+        pass
+
+@app.callback(
+    Output(component_id = 'class-graphs', component_property='children'),
+    [Input(component_id= 'class-dropdown', component_property='value')]
+    )
 def update_output(value):
-    if value=='CT':
+    if value=='M-CT':
         return movie_count_by_month_graph()
     elif value=='AVG-Month':
         return avg_revenue_month_graph()
@@ -211,8 +287,15 @@ def update_output(value):
         return budget_imdb_scatter_graph()
     elif value=='Rev/IMDb':
         return revenue_imdb_scatter_graph()
-
-# @app.callback(
-#     Output(component_id = 'class-choices', component_property='children'),
-#     [Input(component_id= 'class-dropdown', component_property='value')]
-#     )
+    elif value == 'G-CT':
+        return dcc.Graph(
+            id = "Genres_total",
+            figure = genre_count_layout())
+    elif value == 'TOT':
+        return dcc.Graph(
+            id = "Genres_total",
+            figure = genre_total_layout())
+    elif value == 'AVG':
+        return dcc.Graph(
+            id = "Genres_total",
+            figure = genre_avg_layout())

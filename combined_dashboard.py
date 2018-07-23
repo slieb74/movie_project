@@ -66,6 +66,8 @@ def genre_avg_layout():
                  }],
                  'layout' : {'title': "Average Amount Made for each Genre"}
                  }
+
+
 app.layout = html.Div(children =[
     html.H1('Welcome to our Movie Database.'),
     html.H3('To fully enjoy your experience, play around with different routes to learn more about movie performance.'),
