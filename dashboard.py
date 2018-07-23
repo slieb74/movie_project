@@ -8,35 +8,31 @@ from __init__ import app
 from models import Movie, Director, Genre, MovieGenre
 import calendar
 import plotly.graph_objs as go
-from dashboard_routes import *
+from movie_routes import *
+from genre_routes import *
+from director_routes import *
 
 ##################### DASH LAYOUT ##########################
-colors = {
-    'background': '#111111',
-    'text': '#7FDBFF'
-}
 
 app.layout = html.Div(children=[
     html.H1('Welcome to our Movie Database.'),
     html.H3('To fully enjoy your experience, play around with different routes to learn more about movie performance.'),
 
-    dcc.Dropdown(
-        id='all-dropdown',
-        options=[
+    dcc.Tabs(
+        tabs=[
             {'label': 'Movies', 'value': 'M'},
             {'label': 'Genres', 'value': 'G'},
             {'label': 'Directors', 'value': 'D'},
         ],
-        value='M'
+        value='M',
+        id='tabs'
     ),
-    html.Div(id='all-choices'),
-
+    html.Div(id='tab-output'),
     # option 1
     # container html.Div(children=movies_view)
     # movies_view = html.Div(id='movies_view', children=
     #     dcc.Graph
     # )
-
     # option 2
     # movies_view = html.Div(id='movies_view', children=
     #     dcc.Graph
@@ -68,7 +64,7 @@ app.layout = html.Div(children=[
 
 @app.callback(
     Output(component_id = 'class-dropdown', component_property='options'),
-    [Input(component_id= 'all-dropdown', component_property='value')]
+    [Input(component_id= 'tabs', component_property='value')]
     )
 def update_dropdown(value):
     if value=='M':
@@ -77,7 +73,9 @@ def update_dropdown(value):
         {'label': 'Average Revenue per Season', 'value': 'AVG-Season'},
         {'label': 'Budget/Revenue', 'value': 'Bud/Rev'},
         {'label': 'Budget/IMDb Rating', 'value': 'Bud/IMDb'},
-        {'label': 'Revenue/IMDb Rating', 'value': 'Rev/IMDb'}
+        {'label': 'Revenue/IMDb Rating', 'value': 'Rev/IMDb'},
+        {'label': 'Runtime/Profit', 'value':'RT/Profit'},
+        {'label': 'IMDb Rating/Profit', 'value':'IMDb/Profit'}
         ]
     elif value=='G':
         return [{'label': 'Count', 'value': 'G-CT'},
@@ -106,6 +104,10 @@ def update_output(value):
         return budget_imdb_scatter_graph()
     elif value=='Rev/IMDb':
         return revenue_imdb_scatter_graph()
+    elif value == 'RT/Profit':
+        return movie_runtimes()
+    elif value == 'IMDb/Profit':
+        return imdb_vs_profit()
     elif value == 'G-CT':
         return dcc.Graph(
             id = "Genres_total",
@@ -126,7 +128,7 @@ def update_output(value):
 #create radio items for movie and genre dropdowns
 @app.callback(
     Output(component_id = 'radio-items', component_property='options'),
-    [Input(component_id= 'all-dropdown', component_property='value')
+    [Input(component_id= 'tabs', component_property='value')
     ])
 def update_radio_items(value):
     if value=='M':
@@ -153,7 +155,7 @@ def update_radio_items(value):
 #generate checklists for genre dropdown
 @app.callback(
     Output(component_id = 'genre-specific', component_property='options'),
-    [Input(component_id= 'all-dropdown', component_property='value')
+    [Input(component_id= 'tabs', component_property='value')
     ])
 def update_checklists(value):
     if value=='G':
@@ -164,7 +166,7 @@ def update_checklists(value):
 #revenue secondary graphs for months
 @app.callback(
     Output(component_id = 'month-graphs', component_property='children'),
-    [Input(component_id= 'all-dropdown', component_property='value'),
+    [Input(component_id= 'tabs', component_property='value'),
     Input(component_id = 'radio-items', component_property='value')],
     )
 def update_secondary_graph(value,radio):
@@ -176,7 +178,7 @@ def update_secondary_graph(value,radio):
 #genre secondary graphs
 @app.callback(
     Output('month_genres', 'children'),
-    [Input(component_id= 'all-dropdown', component_property='value'),
+    [Input(component_id= 'tabs', component_property='value'),
     Input('genre-specific', 'values'),
     Input ('radio-items', 'value')])
 def update_gen_months(genre ,value, radio):
