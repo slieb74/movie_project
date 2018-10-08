@@ -23,10 +23,10 @@ To show our visualizations, we built a dashboard using Flask as the backend and 
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png" width='950' height='250'>
 
 #### Average Revenue by Season
-<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.40.09%20PM.png" width='250' height='250'>
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.40.09%20PM.png" width='350' height='250'>
 
 #### Budget vs. Revenue
-<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.41.20%20PM.png" width='850' height='250'>
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.41.20%20PM.png" width='850' height='300'>
 
 #### Average Revenue per Genre
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.43.12%20PM.png" width='950' height='250'>
