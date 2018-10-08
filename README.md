@@ -17,20 +17,18 @@ The schema of our SQL Database consisted of 3 primary classes: Movie, Genre, and
 To show our visualizations, we built a dashboard using Flask as the backend and Dash as the front end.  Our dashboard consisted of three main tabs, one for each of the Movie, Genre, and Director classes. Under each tab, a user can select from a dropdown of options or select radio buttons to see different charts and visualizations highlighting some of the features we used. 
 
 #### Movies Released by Month 
-
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.46%20PM.png" width='950' height='250'>
 #### Detailed Movie Info by Month
-<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png" width='950' height='550'>
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png" width='950' height='250'>
 
 #### Average Revenue by Season
-
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.40.09%20PM.png" width='950' height='250'>
 #### Budget vs. Revenue
-
-#### Revenue vs. IMDb Rating
-
-#### IMDb Rating vs. Profit
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.41.20%20PM.png" width='950' height='250'>
 
 #### Average Revenue per Genre
-
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.43.12%20PM.png" width='950' height='250'>
 #### Genre Profit Comparison by Month
-
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.43.49%20PM.png" width='950' height='250'>
 #### Revenue per Director
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.45.05%20PM.png" width='950' height='250'>
