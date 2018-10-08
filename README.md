@@ -19,7 +19,7 @@ To show our visualizations, we built a dashboard using Flask as the backend and 
 #### Movies Released by Month 
 
 #### Detailed Movie Info by Month
-![img] (https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png)
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png" width='950' height='550'>
 
 #### Average Revenue by Season
 
