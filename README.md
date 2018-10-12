@@ -6,7 +6,9 @@ To understand which types of movies tended to perform well in the box office, an
 
 ### ETL
 
-We gathered our data from two sources. First, we got the movie names, directors, genres, IMDb rating, and number of user reviews from three datasets provided by IMDb that we merged together and loaded with Pandas. Second, we called TheMovieDB's API to get budget, revenue, release date, and runtime data. The API only allowed us to submit 40 requests at once, so we integrated a sleep timer into our function that stopped for 10 seconds after every 40 calls. Due to time and computational constraints, we only called 25,000 movies using the API. Due to data leakage, and a lot of unused id codes on TheMovieDB's API, 25,000 calls resulted in way fewer actual movies. Once we had all of the data from the API in JSON format, we converted it into a Pandas dataframe. Both sources identified movies using the same ID code, so we merged the two data streams into one dataframe using Pandas. We limited the scope of our data to only films released since 2000, which resulted in a dataset of roughtly 1,500 movies.
+We gathered our data from two sources. First, we got the movie names, directors, genres, IMDb rating, and number of user reviews from three datasets provided by IMDb that we merged together and loaded with Pandas. Second, we called TheMovieDB's API to get budget, revenue, release date, and runtime data. The API only allowed us to submit 40 requests at once, so we integrated a sleep timer into our function that stopped for 10 seconds after every 40 calls. Due to time and computational constraints, we only called 25,000 movies using the API. Due to data leakage, and a lot of unused id codes on TheMovieDB's API, 25,000 calls resulted in way fewer actual movies. Once we had all of the data from the API in JSON format, we converted it into a Pandas dataframe. 
+
+Both sources identified movies using the same ID code, so we merged the two data streams into one dataframe using Pandas. We limited the scope of our data to only films released since 2000, which resulted in a dataset of roughtly 1,500 movies.
 
 ### SQL Database
 
@@ -24,19 +26,22 @@ To show our visualizations, we built a dashboard using Flask as the backend and 
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-12%20at%202.10.32%20PM.png">
 
 #### Movies Released by Month 
-Distribution of when movies in our dataset were released.
+* Distribution of when movies in our dataset were released.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.46%20PM.png" width='950' height='250'>
 
 #### Detailed Movie Info by Month
-Can select any month and see which movies were released, and its associated features.
+* Can select any month and see which movies were released, and its associated features.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.18%20PM.png" width='950' height='250'>
 
 #### Average Revenue by Season
-Interesting to see that Summer movies had the highest average revenue despite being the least common months for movie releases in our dataset. However, the Summer is a popular time for high budget action movies (Spider-Man, Star Wars) which likely influenced the data.
-<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.40.09%20PM.png" width='350' height='250'>
+* Interesting to see that Summer movies had the highest average revenue despite containing the least common months for movie releases in our dataset. 
+* However, the Summer is a popular time for high budget action movies (Spider-Man, Star Wars) which likely influenced the data.
+<p align="center">
+  <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.40.09%20PM.png" width='350' height='250'>
+</p>
 
 #### Budget vs. Revenue
-Scatter plot that compares money spent vs. earned for each movie.
+* Scatter plot that compares money spent vs. earned for each movie.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.41.20%20PM.png" width='850' height='300'>
 
 #### Average Revenue per Genre
@@ -44,11 +49,11 @@ Scatter plot that compares money spent vs. earned for each movie.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.43.12%20PM.png" width='950' height='250'>
 
 #### Genre Profit Comparison by Month
-Can compare how profit, revenue, and number of movies released per month differed for each of the genres.
+* Can compare how profit, revenue, and number of movies released per month differed for each of the genres.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.43.49%20PM.png" width='950' height='250'>
 
 #### Revenue per Director
-Allows the user to get a sense of which directors tended to make blockbuster films.
+* Allows the user to get a sense of which directors tended to make blockbuster films.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.45.05%20PM.png" width='950' height='300'>
 
 ### Next Steps
