@@ -4,6 +4,9 @@
 
 To understand which types of movies tended to perform well in the box office, and whether seasonality had a large impact.
 
+###### Dashboard Landing Page
+<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-12%20at%202.10.32%20PM.png">
+
 ### ETL
 
 We gathered our data from two sources. First, we got the movie names, directors, genres, IMDb rating, and number of user reviews from three datasets provided by IMDb that we merged together and loaded with Pandas. Second, we called TheMovieDB's API to get budget, revenue, release date, and runtime data. The API only allowed us to submit 40 requests at once, so we integrated a sleep timer into our function that stopped for 10 seconds after every 40 calls. Due to time and computational constraints, we only called 25,000 movies using the API. Due to data leakage, and a lot of unused id codes on TheMovieDB's API, 25,000 calls resulted in way fewer actual movies. Once we had all of the data from the API in JSON format, we converted it into a Pandas dataframe. 
@@ -21,9 +24,6 @@ The Movie and Director classes backpopulated each other due to the one-to-many r
 ### Dashboard
 
 To show our visualizations, we built a dashboard using Flask as the backend and Dash as the front end. We used numerous callback methods to allow for interactivity and user-responsiveness in our Dashboard. To make it visually pleasing, we used HTML templates to customize each landing page. Our dashboard consisted of three main tabs, one for each of the Movie, Genre, and Director classes. Under each tab, a user can select from a dropdown of options or select radio buttons to see different charts and visualizations highlighting some of the features we used. Whenever a dropdown or button was selected, the callbacks would find the associated routes we created and update the page accordingly. 
-
-#### Dashboard Landing Page
-<img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-12%20at%202.10.32%20PM.png">
 
 #### Movies Released by Month 
 * Distribution of when movies in our dataset were released.
