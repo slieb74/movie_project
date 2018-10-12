@@ -25,6 +25,8 @@ The Movie and Director classes backpopulated each other due to the one-to-many r
 
 To show our visualizations, we built a dashboard using Flask as the backend and Dash as the front end. We used numerous callback methods to allow for interactivity and user-responsiveness in our Dashboard. To make it visually pleasing, we used HTML templates to customize each landing page. Our dashboard consisted of three main tabs, one for each of the Movie, Genre, and Director classes. Under each tab, a user can select from a dropdown of options or select radio buttons to see different charts and visualizations highlighting some of the features we used. Whenever a dropdown or button was selected, the callbacks would find the associated routes we created and update the page accordingly. 
 
+Beleow is a selection of different graphs displayed on our dashboard.
+
 #### Movies Released by Month 
 * Distribution of when movies in our dataset were released.
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.39.46%20PM.png" width='950' height='250'>
@@ -42,6 +44,7 @@ To show our visualizations, we built a dashboard using Flask as the backend and 
 
 #### Budget vs. Revenue
 * Scatter plot that compares money spent vs. earned for each movie.
+* Can also select plots between budget & IMDb rating, revenue & IMDb rating, runtime & profit, and IMDB rating & profit
 <img src="https://github.com/slieb74/movie_project/blob/master/images/Screen%20Shot%202018-10-08%20at%202.41.20%20PM.png" width='850' height='300'>
 
 #### Average Revenue per Genre
